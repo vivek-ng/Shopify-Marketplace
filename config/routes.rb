@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :products do
     	collection do
     		get 'all_product_details'
+    		post 'purchase_products'
     	end
     end
 end
