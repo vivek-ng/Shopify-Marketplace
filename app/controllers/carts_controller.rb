@@ -3,7 +3,6 @@ class CartsController < ApplicationController
     before_action :delete_cart_products_cache , only: [:complete_cart]
 
 	def add_products_to_cart
-		byebug
 		product_present = redis.sismember(redis_key , params[:product_id])
 		if product_present
 			message = "Product already Present in your cart!"
@@ -27,7 +26,6 @@ class CartsController < ApplicationController
 
 	def get_cart_details
 		@all_products = current_cart.products
-		byebug
 		render json: {product_details: @all_products , Total: @all_products.sum('price') , status: :ok}
 	end
     
