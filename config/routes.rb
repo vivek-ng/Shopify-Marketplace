@@ -6,4 +6,14 @@ Rails.application.routes.draw do
     		post 'purchase_products'
     	end
     end
+
+    resources :carts do
+    	collection do
+    		post 'add_products_to_cart'
+    		post 'complete_cart'
+    		get 'get_cart_details'
+        end
+    end
+
+
 end
