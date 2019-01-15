@@ -1,7 +1,19 @@
 class CartsController < ApplicationController
+    
+    before_action :delete_cart_products_cache , only: [:complete_cart]
+
 	def add_products_to_cart
-		@order = current_cart.orders.build(product_id: params[:product_id])
-		@order.save
+		byebug
+		product_present = redis.sismember(redis_key , params[:product_id])
+		if product_present
+			message = "Product already Present in your cart!"
+		else
+		   @order = current_cart.orders.build(product_id: params[:product_id])
+		   @order.save
+           message = "Product successfully added to your cart!"
+           redis.sadd(redis_key , params[:product_id])
+	    end
+	    render json: {message: message , status: :ok}
 	end
 
 	def complete_cart
@@ -18,4 +30,19 @@ class CartsController < ApplicationController
 		byebug
 		render json: {product_details: @all_products , Total: @all_products.sum('price') , status: :ok}
 	end
+    
+    private
+
+    def redis
+        $redis
+    end
+
+    def redis_key
+    	"cart_products:#{current_cart.id}"
+    end
+
+    def delete_cart_products_cache
+    	redis.del(redis_key)
+    end
+
 end

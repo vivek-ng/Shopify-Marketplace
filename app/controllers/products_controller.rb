@@ -8,10 +8,8 @@ class ProductsController < ApplicationController
 
    def purchase_products
    	Product.where("id in (?) and inventory_count > ?" , JSON.parse(params[:ids]) , 0).find_each do |prod|
-   		#byebug
    		prod.update_attribute(:inventory_count , prod.inventory_count - 1)
    	end 
-   	#byebug
    end
 
 end
